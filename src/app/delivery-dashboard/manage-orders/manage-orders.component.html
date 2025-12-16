@@ -1,0 +1,27 @@
+<div class="manage-orders-page">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item active">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Manage Orders</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">assignment</mat-icon>
+        Manage Orders
+      </h1>
+    </div>
+  </div>
+
+  <div class="content-container">
+    <div class="options-grid">
+      <div class="option-card" (click)="navigateToViewAssignedOrders()">
+        <div class="card-icon">
+          <mat-icon>local_shipping</mat-icon>
+        </div>
+        <h3>View Assigned Orders</h3>
+        <p>View orders assigned for delivery and update status</p>
+      </div>
+    </div>
+  </div>
+</div>

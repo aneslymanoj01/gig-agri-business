@@ -1,0 +1,202 @@
+<div class="search-delivery-team-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item">Delivery Team</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Search</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">search</mat-icon>
+        Search Delivery Team
+      </h1>
+      <p class="page-subtitle">Find and manage delivery team members</p>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-section">
+    <div class="content-container">
+      
+      <!-- Search Filters -->
+      <div class="search-filters">
+        <mat-form-field appearance="outline">
+          <mat-label>Search by Name</mat-label>
+          <input matInput [(ngModel)]="searchFilters.name" (keyup.enter)="onSearch()" placeholder="Team member name">
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Vehicle Type</mat-label>
+          <select matNativeControl [(ngModel)]="searchFilters.vehicleType">
+            <option value="">All vehicle types</option>
+            <option value="BIKE">Bike</option>
+            <option value="CAR">Car</option>
+            <option value="LORRY">Lorry</option>
+          </select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Search by City</mat-label>
+          <input matInput [(ngModel)]="searchFilters.city" (keyup.enter)="onSearch()" placeholder="City">
+          <mat-icon matSuffix>location_city</mat-icon>
+        </mat-form-field>
+
+        <div class="search-actions">
+          <button mat-raised-button color="primary" (click)="onSearch()" [disabled]="isLoading">
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+          <button mat-stroked-button (click)="onClear()" [disabled]="isLoading">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions Bar -->
+      <div class="actions-bar">
+        <button mat-raised-button color="primary" (click)="onRefresh()" [disabled]="isLoading">
+          <mat-icon>refresh</mat-icon>
+          Refresh
+        </button>
+        <span class="results-count" *ngIf="!isLoading">
+          Showing {{ deliveryTeam.length }} of {{ totalElements }} team members
+        </span>
+      </div>
+
+      <!-- Section Title -->
+      <div class="section-header">
+        <h3>Delivery Team List</h3>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading delivery team...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoading && deliveryTeam.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">delivery_dining</mat-icon>
+        <h3>No Team Members Found</h3>
+        <p>No delivery team members match your search criteria or there are no team members in the system.</p>
+        <button mat-raised-button color="primary" routerLink="/dashboard/delivery-team/add">
+          <mat-icon>add</mat-icon>
+          Add First Team Member
+        </button>
+      </div>
+
+      <!-- Data Table -->
+      <div *ngIf="!isLoading && deliveryTeam.length > 0" class="table-container">
+        <table mat-table [dataSource]="deliveryTeam" class="delivery-team-table">
+          
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="id-column">ID</th>
+            <td mat-cell *matCellDef="let member" class="id-column">
+              {{ member.id }}
+            </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let member">
+              {{ member.name }}
+            </td>
+          </ng-container>
+
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let member">
+              <a [href]="'mailto:' + member.email" class="email-link">{{ member.email }}</a>
+            </td>
+          </ng-container>
+
+          <!-- Phone Column -->
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef>Phone</th>
+            <td mat-cell *matCellDef="let member">
+              <a [href]="'tel:' + member.phone" class="phone-link">{{ member.phone }}</a>
+            </td>
+          </ng-container>
+
+          <!-- Vehicle Type Column -->
+          <ng-container matColumnDef="vehicleType">
+            <th mat-header-cell *matHeaderCellDef>Vehicle Type</th>
+            <td mat-cell *matCellDef="let member">
+              {{ member.vehicleType }}
+            </td>
+          </ng-container>
+
+          <!-- Vehicle Number Column -->
+          <ng-container matColumnDef="vehicleNumber">
+            <th mat-header-cell *matHeaderCellDef>Vehicle Number</th>
+            <td mat-cell *matCellDef="let member">
+              {{ member.vehicleNumber }}
+            </td>
+          </ng-container>
+
+          <!-- City Column -->
+          <ng-container matColumnDef="city">
+            <th mat-header-cell *matHeaderCellDef>City</th>
+            <td mat-cell *matCellDef="let member">
+              {{ member.city }}
+            </td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let member">
+              <span class="status-badge" [class]="'status-' + member.status.toLowerCase()">
+                {{ member.status }}
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="team-member-row"></tr>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="!isLoading && deliveryTeam.length > 0 && totalPages > 1" class="pagination-container">
+        <div class="pagination-info">
+          <span>Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+        </div>
+        <div class="pagination-controls">
+          <button mat-icon-button [disabled]="isFirst" (click)="onPageChange(0)" matTooltip="First Page">
+            <mat-icon>first_page</mat-icon>
+          </button>
+          <button mat-icon-button [disabled]="isFirst" (click)="onPageChange(currentPage - 1)" matTooltip="Previous Page">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          
+          <div class="page-numbers">
+            <button 
+              *ngFor="let page of getPageNumbers()" 
+              mat-button 
+              [class.active]="page === currentPage"
+              (click)="onPageChange(page)">
+              {{ page + 1 }}
+            </button>
+          </div>
+          
+          <button mat-icon-button [disabled]="isLast" (click)="onPageChange(currentPage + 1)" matTooltip="Next Page">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+          <button mat-icon-button [disabled]="isLast" (click)="onPageChange(totalPages - 1)" matTooltip="Last Page">
+            <mat-icon>last_page</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

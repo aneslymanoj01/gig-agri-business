@@ -1,0 +1,202 @@
+<div class="add-dealer-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item">Dealers</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Add New</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">person_add</mat-icon>
+        Add New Dealer
+      </h1>
+      <p class="page-subtitle">Create a new dealer to expand your network</p>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section">
+    <div class="form-container">
+      <form [formGroup]="dealerForm" (ngSubmit)="onSubmit()" novalidate>
+        
+        <!-- Basic Information Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">person</mat-icon>
+            <div class="card-title">
+              <h3>Basic Information</h3>
+              <p>Enter the dealer's essential details</p>
+            </div>
+          </div>
+          
+          <div class="form-grid basic-info">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Dealer Name *</mat-label>
+              <input matInput formControlName="name" placeholder="e.g., XYZ Electronics Store">
+              <mat-icon matSuffix>store</mat-icon>
+              <mat-error *ngIf="dealerForm.get('name')?.invalid && dealerForm.get('name')?.touched">
+                Dealer name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Username *</mat-label>
+              <input matInput formControlName="userName" placeholder="e.g., dealer123" (blur)="checkUsername()">
+              <mat-icon matSuffix *ngIf="usernameCheckLoading" class="loading-icon">hourglass_empty</mat-icon>
+              <mat-icon matSuffix *ngIf="usernameValid === true" class="success-icon">check_circle</mat-icon>
+              <mat-icon matSuffix *ngIf="usernameValid === false" class="error-icon">error</mat-icon>
+              <mat-error *ngIf="dealerForm.get('userName')?.invalid && dealerForm.get('userName')?.touched">
+                Username is required
+              </mat-error>
+              <mat-hint *ngIf="usernameValid === true" class="success-hint">
+                <mat-icon class="hint-icon">check</mat-icon>
+                Username is available
+              </mat-hint>
+              <mat-hint *ngIf="usernameValid === false" class="error-hint">
+                <mat-icon class="hint-icon">close</mat-icon>
+                {{ usernameError }}
+              </mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Email *</mat-label>
+              <input matInput formControlName="email" type="email" placeholder="e.g., dealer@example.com">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="dealerForm.get('email')?.invalid && dealerForm.get('email')?.touched">
+                <span *ngIf="dealerForm.get('email')?.hasError('required')">Email is required</span>
+                <span *ngIf="dealerForm.get('email')?.hasError('email')">Please enter a valid email</span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Contact Information Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">contact_phone</mat-icon>
+            <div class="card-title">
+              <h3>Contact Information</h3>
+              <p>Set contact and business details</p>
+            </div>
+          </div>
+          
+          <div class="form-grid contact-info">
+            <mat-form-field appearance="outline">
+              <mat-label>Phone *</mat-label>
+              <input matInput formControlName="phone" placeholder="e.g., 0716572281">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="dealerForm.get('phone')?.invalid && dealerForm.get('phone')?.touched">
+                Phone is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Contact Person *</mat-label>
+              <input matInput formControlName="contactPerson" placeholder="e.g., John Doe">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="dealerForm.get('contactPerson')?.invalid && dealerForm.get('contactPerson')?.touched">
+                Contact person is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Business Type *</mat-label>
+              <select matNativeControl formControlName="businessType">
+                <option value="">Select business type</option>
+                <option value="ELECTRONICS">Electronics</option>
+                <option value="GROCERY">Grocery</option>
+                <option value="PHARMACY">Pharmacy</option>
+                <option value="HARDWARE">Hardware</option>
+                <option value="CLOTHING">Clothing</option>
+                <option value="OTHER">Other</option>
+              </select>
+              <mat-icon matSuffix>business</mat-icon>
+              <mat-error *ngIf="dealerForm.get('businessType')?.invalid && dealerForm.get('businessType')?.touched">
+                Business type is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Address Information Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">location_on</mat-icon>
+            <div class="card-title">
+              <h3>Address Information</h3>
+              <p>Configure location and address details</p>
+            </div>
+          </div>
+          
+          <div class="form-grid address-info">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Street Address *</mat-label>
+              <input matInput formControlName="streetAddress" placeholder="e.g., 456 Retail Ave">
+              <mat-icon matSuffix>home</mat-icon>
+              <mat-error *ngIf="dealerForm.get('streetAddress')?.invalid && dealerForm.get('streetAddress')?.touched">
+                Street address is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>City *</mat-label>
+              <input matInput formControlName="city" placeholder="e.g., Colombo">
+              <mat-icon matSuffix>location_city</mat-icon>
+              <mat-error *ngIf="dealerForm.get('city')?.invalid && dealerForm.get('city')?.touched">
+                City is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>State *</mat-label>
+              <input matInput formControlName="state" placeholder="e.g., Western">
+              <mat-icon matSuffix>map</mat-icon>
+              <mat-error *ngIf="dealerForm.get('state')?.invalid && dealerForm.get('state')?.touched">
+                State is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Postal Code *</mat-label>
+              <input matInput formControlName="postalCode" placeholder="e.g., 10100">
+              <mat-icon matSuffix>markunread_mailbox</mat-icon>
+              <mat-error *ngIf="dealerForm.get('postalCode')?.invalid && dealerForm.get('postalCode')?.touched">
+                Postal code is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Country</mat-label>
+              <input matInput formControlName="country" readonly>
+              <mat-icon matSuffix>flag</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <div class="action-buttons">
+            <button mat-stroked-button type="button" (click)="onClear()" [disabled]="isLoading" class="clear-btn">
+              <mat-icon>refresh</mat-icon>
+              Clear Form
+            </button>
+            
+            <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="isLoading" class="cancel-btn">
+              <mat-icon>close</mat-icon>
+              Cancel
+            </button>
+            
+            <button mat-raised-button color="primary" type="submit" [disabled]="!canSubmit()" class="create-btn">
+              <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+              <mat-icon *ngIf="!isLoading">add_circle</mat-icon>
+              {{ isLoading ? 'Creating...' : 'Create Dealer' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

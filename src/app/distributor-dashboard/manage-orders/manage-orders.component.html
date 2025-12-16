@@ -1,0 +1,65 @@
+<div class="manage-orders-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Manage Orders</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">assignment</mat-icon>
+        Manage Orders
+      </h1>
+      <p class="page-subtitle">Manage dealer orders and delivery assignments</p>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-container">
+    <div class="options-container">
+      
+      <mat-card class="option-card" (click)="navigateToViewOrders()">
+        <mat-card-content>
+          <div class="card-icon">
+            <mat-icon>visibility</mat-icon>
+          </div>
+          <h3>View Orders</h3>
+          <p>View and manage dealer orders</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="option-card" (click)="navigateToApproveReject()">
+        <mat-card-content>
+          <div class="card-icon">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          <h3>Approve/Reject Orders</h3>
+          <p>Review and approve or reject dealer orders</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="option-card" (click)="navigateToAssignDelivery()">
+        <mat-card-content>
+          <div class="card-icon">
+            <mat-icon>local_shipping</mat-icon>
+          </div>
+          <h3>Assign Delivery Team</h3>
+          <p>Assign delivery teams to approved orders</p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="option-card" (click)="navigateToTraceOrder()">
+        <mat-card-content>
+          <div class="card-icon">
+            <mat-icon>track_changes</mat-icon>
+          </div>
+          <h3>Trace Order</h3>
+          <p>Track order status and delivery progress</p>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  </div>
+
+</div>

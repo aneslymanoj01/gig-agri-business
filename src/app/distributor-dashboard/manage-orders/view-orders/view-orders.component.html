@@ -1,0 +1,168 @@
+<div class="view-orders-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item" (click)="goBack()">Manage Orders</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">View Orders</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">visibility</mat-icon>
+        View Orders
+      </h1>
+      <p class="page-subtitle">View and manage dealer orders</p>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-container">
+    
+    <!-- Filters Section -->
+    <div class="search-section">
+      <div class="search-container">
+        <div class="search-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">filter_list</mat-icon>
+            <div class="card-title">
+              <h3>Search Filters</h3>
+              <p>Use filters to find specific orders</p>
+            </div>
+          </div>
+          
+          <div class="search-form">
+            <div class="form-grid">
+              <!-- Status Filter -->
+              <mat-form-field appearance="outline">
+                <mat-label>Filter by Status</mat-label>
+                <select matNativeControl [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()">
+                  <option *ngFor="let option of statusOptions" [value]="option.value">
+                    {{option.label}}
+                  </option>
+                </select>
+                <mat-icon matSuffix>assignment</mat-icon>
+              </mat-form-field>
+
+              <!-- Dealer ID Filter -->
+              <mat-form-field appearance="outline">
+                <mat-label>Filter by Dealer ID</mat-label>
+                <input matInput type="number" [(ngModel)]="dealerId" placeholder="Enter dealer ID">
+                <mat-icon matSuffix>person</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+              <button mat-raised-button color="primary" (click)="onSearch()">
+                <mat-icon>search</mat-icon> Search Orders
+              </button>
+              <button mat-stroked-button (click)="clearFilters()">
+                <mat-icon>clear</mat-icon> Clear Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading orders...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && orders.length === 0" class="empty-state">
+      <mat-icon>shopping_bag</mat-icon>
+      <h3>No Orders Found</h3>
+      <p *ngIf="!selectedStatus && !dealerId">No orders available.</p>
+      <p *ngIf="selectedStatus || dealerId">No orders match your current filters.</p>
+    </div>
+
+    <!-- Orders List -->
+    <div *ngIf="!isLoading && orders.length > 0" class="orders-container">
+      
+      <div *ngFor="let order of orders" class="order-card">
+        <mat-card>
+          
+          <!-- Card Header -->
+          <mat-card-header>
+            <div class="order-header">
+              <div class="order-info">
+                <h3 class="order-id">Order #{{order.orderId}}</h3>
+                <div class="order-meta">
+                  <span class="created-date">
+                    <mat-icon>schedule</mat-icon>
+                    Created: {{order.createdAt | date:'MMM dd, yyyy HH:mm'}}
+                  </span>
+                  <span class="item-count">
+                    <mat-icon>inventory</mat-icon>
+                    {{order.itemCount}} item(s)
+                  </span>
+                </div>
+              </div>
+              <div class="status-badge" [style.background-color]="getStatusColor(order.status)">
+                <mat-icon>{{getStatusIcon(order.status)}}</mat-icon>
+                <span>{{order.status.replace('_', ' ')}}</span>
+              </div>
+            </div>
+          </mat-card-header>
+
+          <!-- Card Content -->
+          <mat-card-content>
+            
+            <!-- Order Summary -->
+            <div class="order-summary">
+              <div class="summary-row">
+                <span class="label">Total Amount:</span>
+                <span class="value total-amount">LKR {{ order.totalAmount }}</span>
+              </div>
+            </div>
+
+            <!-- Items List -->
+            <div class="items-section">
+              <h4>Order Items</h4>
+              <div class="items-list">
+                <div *ngFor="let item of order.items" class="item-row">
+                  <div class="item-info">
+                    <span class="item-name">{{item.productName}}</span>
+                    <span class="item-details">
+                      Qty: {{item.quantity}} × LKR {{item.unitPrice}} = LKR {{item.quantity * item.unitPrice}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </mat-card-content>
+
+          <!-- Card Actions -->
+          <mat-card-actions>
+            <button mat-button *ngIf="order.status === 'APPROVED'" color="primary">
+              <mat-icon>assignment_ind</mat-icon> Assign Delivery
+            </button>
+          </mat-card-actions>
+
+        </mat-card>
+      </div>
+
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!isLoading && orders.length > 0 && totalPages > 1" class="pagination">
+      <button mat-button [disabled]="currentPage === 0" (click)="previousPage()">
+        <mat-icon>chevron_left</mat-icon> Previous
+      </button>
+      <span class="page-info">
+        Page {{currentPage + 1}} of {{totalPages}} ({{totalElements}} total)
+      </span>
+      <button mat-button [disabled]="currentPage >= totalPages - 1" (click)="nextPage()">
+        Next <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+
+  </div>
+
+</div>

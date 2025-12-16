@@ -1,0 +1,175 @@
+<div class="search-dealer-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item">Dealers</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Search</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">search</mat-icon>
+        Search Dealers
+      </h1>
+      <p class="page-subtitle">Find and manage existing dealers</p>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="search-container">
+      <div class="search-card">
+        <div class="card-header">
+          <mat-icon class="card-icon">filter_list</mat-icon>
+          <div class="card-title">
+            <h3>Search Filters</h3>
+            <p>Use filters to find specific dealers</p>
+          </div>
+        </div>
+        
+        <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-form">
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Dealer Name</mat-label>
+              <input matInput formControlName="name" placeholder="Enter dealer name">
+              <mat-icon matSuffix>store</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <input matInput formControlName="city" placeholder="Enter city">
+              <mat-icon matSuffix>location_city</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Status</mat-label>
+              <select matNativeControl formControlName="status">
+                <option value="">All Status</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+              <mat-icon matSuffix>info</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div class="search-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+              <mat-icon *ngIf="!isLoading">search</mat-icon>
+              <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+              {{ isLoading ? 'Searching...' : 'Search Dealers' }}
+            </button>
+            
+            <button mat-stroked-button type="button" (click)="onClear()" [disabled]="isLoading">
+              <mat-icon>clear</mat-icon>
+              Clear Filters
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div class="results-section" *ngIf="searchResults">
+    <div class="results-container">
+      <!-- Actions Bar -->
+      <div class="actions-bar">
+        <button mat-raised-button color="primary" (click)="onRefresh()" [disabled]="isLoading">
+          <mat-icon>refresh</mat-icon>
+          Refresh
+        </button>
+        <span class="results-count" *ngIf="!isLoading">
+          {{ searchResults.totalElements }} dealer(s) found
+        </span>
+      </div>
+
+      <div class="dealers-table" *ngIf="searchResults.dealers.length > 0">
+        <table mat-table [dataSource]="searchResults.dealers" class="dealers-data-table">
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let dealer">{{ dealer.id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let dealer">{{ dealer.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let dealer">{{ dealer.email }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef>Phone</th>
+            <td mat-cell *matCellDef="let dealer">{{ dealer.phone }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="city">
+            <th mat-header-cell *matHeaderCellDef>City</th>
+            <td mat-cell *matCellDef="let dealer">{{ dealer.city }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="businessType">
+            <th mat-header-cell *matHeaderCellDef>Business Type</th>
+            <td mat-cell *matCellDef="let dealer">
+              <span class="business-type-badge">{{ dealer.businessType }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let dealer">
+              <span class="status-badge" [class]="'status-' + dealer.status.toLowerCase()">
+                {{ dealer.status }}
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <!-- Pagination -->
+        <div *ngIf="!isLoading && searchResults.dealers.length > 0 && searchResults.totalPages > 1" class="pagination-container">
+          <div class="pagination-info">
+            <span>Page {{ searchResults.page + 1 }} of {{ searchResults.totalPages }}</span>
+          </div>
+          <div class="pagination-controls">
+            <button mat-icon-button [disabled]="searchResults.first" (click)="onPageChange(0)" matTooltip="First Page">
+              <mat-icon>first_page</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="searchResults.first" (click)="onPageChange(searchResults.page - 1)" matTooltip="Previous Page">
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            
+            <div class="page-numbers">
+              <button 
+                *ngFor="let page of getPageNumbers()" 
+                mat-button 
+                [class.active]="page === searchResults.page"
+                (click)="onPageChange(page)">
+                {{ page + 1 }}
+              </button>
+            </div>
+            
+            <button mat-icon-button [disabled]="searchResults.last" (click)="onPageChange(searchResults.page + 1)" matTooltip="Next Page">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="searchResults.last" (click)="onPageChange(searchResults.totalPages - 1)" matTooltip="Last Page">
+              <mat-icon>last_page</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-results" *ngIf="searchResults.dealers.length === 0">
+        <mat-icon>search_off</mat-icon>
+        <h3>No dealers found</h3>
+        <p>Try adjusting your search criteria</p>
+      </div>
+    </div>
+  </div>
+</div>

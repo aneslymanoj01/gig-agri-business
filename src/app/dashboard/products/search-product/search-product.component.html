@@ -1,0 +1,188 @@
+<div class="search-product-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item">Products</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Search</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">search</mat-icon>
+        Search Products
+      </h1>
+      <p class="page-subtitle">Find and manage products in your catalog</p>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-section">
+    <div class="content-container">
+      
+      <!-- Search Filters -->
+      <div class="search-filters">
+        <mat-form-field appearance="outline">
+          <mat-label>Search by ID</mat-label>
+          <input matInput [(ngModel)]="searchFilters.id" (keyup.enter)="onSearch()" placeholder="Product ID">
+          <mat-icon matSuffix>tag</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Search by Name</mat-label>
+          <input matInput [(ngModel)]="searchFilters.name" (keyup.enter)="onSearch()" placeholder="Product name">
+          <mat-icon matSuffix>inventory</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Search by Category</mat-label>
+          <input matInput [(ngModel)]="searchFilters.category" (keyup.enter)="onSearch()" placeholder="Category">
+          <mat-icon matSuffix>category</mat-icon>
+        </mat-form-field>
+
+        <div class="search-actions">
+          <button mat-raised-button color="primary" (click)="onSearch()" [disabled]="isLoading">
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+          <button mat-stroked-button (click)="onClear()" [disabled]="isLoading">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions Bar -->
+      <div class="actions-bar">
+        <button mat-raised-button color="primary" (click)="onRefresh()" [disabled]="isLoading">
+          <mat-icon>refresh</mat-icon>
+          Refresh
+        </button>
+        <span class="results-count" *ngIf="!isLoading">
+          Showing {{ products.length }} of {{ totalElements }} products
+        </span>
+      </div>
+
+      <!-- Section Title -->
+      <div class="section-header">
+        <h3>Products List</h3>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading products...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoading && products.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">inventory_2</mat-icon>
+        <h3>No Products Found</h3>
+        <p>No products match your search criteria or there are no products in the system.</p>
+        <button mat-raised-button color="primary" routerLink="/dashboard/products/add">
+          <mat-icon>add</mat-icon>
+          Add First Product
+        </button>
+      </div>
+
+      <!-- Data Table -->
+      <div *ngIf="!isLoading && products.length > 0" class="table-container">
+        <table mat-table [dataSource]="products" class="products-table">
+          
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="id-column">ID</th>
+            <td mat-cell *matCellDef="let product" class="id-column">
+              {{ product.id }}
+            </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Product Name</th>
+            <td mat-cell *matCellDef="let product">
+              {{ product.name }}
+            </td>
+          </ng-container>
+
+          <!-- SKU Column -->
+          <ng-container matColumnDef="sku">
+            <th mat-header-cell *matHeaderCellDef>SKU</th>
+            <td mat-cell *matCellDef="let product">
+              {{ product.sku }}
+            </td>
+          </ng-container>
+
+          <!-- Category Column -->
+          <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef>Category</th>
+            <td mat-cell *matCellDef="let product">
+              {{ product.category }}
+            </td>
+          </ng-container>
+
+          <!-- Unit Price Column -->
+          <ng-container matColumnDef="unitPrice">
+            <th mat-header-cell *matHeaderCellDef>Unit Price</th>
+            <td mat-cell *matCellDef="let product">
+              LKR {{ product.unitPrice | number:'1.2-2' }}
+            </td>
+          </ng-container>
+
+          <!-- Stock Quantity Column -->
+          <ng-container matColumnDef="stockQuantity">
+            <th mat-header-cell *matHeaderCellDef>Stock</th>
+            <td mat-cell *matCellDef="let product">
+              {{ product.stockQuantity }}
+            </td>
+          </ng-container>
+
+          <!-- Description Column -->
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let product">
+              {{ product.description }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="product-row"></tr>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="!isLoading && products.length > 0 && totalPages > 1" class="pagination-container">
+        <div class="pagination-info">
+          <span>Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+        </div>
+        <div class="pagination-controls">
+          <button mat-icon-button [disabled]="isFirst" (click)="onPageChange(0)" matTooltip="First Page">
+            <mat-icon>first_page</mat-icon>
+          </button>
+          <button mat-icon-button [disabled]="isFirst" (click)="onPageChange(currentPage - 1)" matTooltip="Previous Page">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          
+          <div class="page-numbers">
+            <button 
+              *ngFor="let page of getPageNumbers()" 
+              mat-button 
+              [class.active]="page === currentPage"
+              (click)="onPageChange(page)">
+              {{ page + 1 }}
+            </button>
+          </div>
+          
+          <button mat-icon-button [disabled]="isLast" (click)="onPageChange(currentPage + 1)" matTooltip="Next Page">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+          <button mat-icon-button [disabled]="isLast" (click)="onPageChange(totalPages - 1)" matTooltip="Last Page">
+            <mat-icon>last_page</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

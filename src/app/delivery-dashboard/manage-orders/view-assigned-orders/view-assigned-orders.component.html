@@ -1,0 +1,93 @@
+<div class="view-assigned-orders-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item" (click)="goBack()">Manage Orders</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">View Assigned Orders</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">local_shipping</mat-icon>
+        View Assigned Orders
+      </h1>
+    </div>
+  </div>
+
+  <div class="content-container">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+      <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+      <p>Loading assigned orders...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+      <button class="retry-btn" (click)="loadAssignedOrders()">Retry</button>
+    </div>
+
+    <!-- Orders List -->
+    <div *ngIf="!loading && !error" class="orders-container">
+      <div *ngIf="assignments.length === 0" class="no-orders">
+        <mat-icon>inbox</mat-icon>
+        <h3>No Assigned Orders</h3>
+        <p>You don't have any orders assigned for delivery at the moment.</p>
+      </div>
+
+      <div *ngIf="assignments.length > 0" class="orders-grid">
+        <div *ngFor="let assignment of assignments" class="order-card">
+          <div class="order-header">
+            <div class="order-id">Order #{{ assignment.orderId }}</div>
+            <div class="order-status" [class]="getStatusClass(assignment.status)">
+              {{ assignment.status }}
+            </div>
+          </div>
+
+          <div class="order-details">
+            <div class="detail-row">
+              <span class="label">Assignment ID:</span>
+              <span class="value">{{ assignment.assignmentId }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Assigned At:</span>
+              <span class="value">{{ formatDate(assignment.assignedAt) }}</span>
+            </div>
+          </div>
+
+          <div class="delivery-address">
+            <span class="label">Delivery Address:</span>
+            <p>{{ assignment.deliveryAddress }}</p>
+          </div>
+
+          <div class="special-instructions" *ngIf="assignment.specialInstructions">
+            <span class="label">Special Instructions:</span>
+            <p>{{ assignment.specialInstructions }}</p>
+          </div>
+
+          <div class="order-actions">
+            <button 
+              *ngIf="canMarkOutForDelivery(assignment.status)"
+              class="action-btn out-for-delivery"
+              (click)="updateOrderStatus(assignment.orderId, 'OUT_FOR_DELIVERY')"
+            >
+              <mat-icon>local_shipping</mat-icon>
+              Mark Out for Delivery
+            </button>
+            
+            <button 
+              *ngIf="canMarkDelivered(assignment.status)"
+              class="action-btn delivered"
+              (click)="updateOrderStatus(assignment.orderId, 'DELIVERED')"
+            >
+              <mat-icon>check_circle</mat-icon>
+              Mark as Delivered
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

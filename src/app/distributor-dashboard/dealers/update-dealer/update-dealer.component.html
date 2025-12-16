@@ -1,0 +1,149 @@
+<div class="update-dealer-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item">Dealers</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Update</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">edit</mat-icon>
+        Update Dealer
+      </h1>
+      <p class="page-subtitle">Search and update dealer information</p>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="search-container">
+      <div class="search-card">
+        <div class="card-header">
+          <mat-icon class="card-icon">search</mat-icon>
+          <div class="card-title">
+            <h3>Find Dealer</h3>
+            <p>Enter dealer ID to search</p>
+          </div>
+        </div>
+        
+        <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-form">
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Dealer ID</mat-label>
+              <input matInput formControlName="dealerId" type="number" placeholder="Enter dealer ID">
+              <mat-icon matSuffix>tag</mat-icon>
+              <mat-error *ngIf="searchForm.get('dealerId')?.hasError('required')">
+                Dealer ID is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="search-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="searchForm.invalid || isSearching">
+              <mat-icon *ngIf="!isSearching">search</mat-icon>
+              <mat-spinner *ngIf="isSearching" diameter="20"></mat-spinner>
+              {{ isSearching ? 'Searching...' : 'Search Dealer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Form Section -->
+  <div class="form-section" *ngIf="dealerData">
+    <div class="form-container">
+      <div class="form-card">
+        <div class="card-header">
+          <mat-icon class="card-icon">edit</mat-icon>
+          <div class="card-title">
+            <h3>Update Dealer Information</h3>
+            <p>Modify dealer details</p>
+          </div>
+        </div>
+        
+        <form [formGroup]="updateForm" (ngSubmit)="onUpdate()" class="update-form">
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Dealer Name *</mat-label>
+              <input matInput formControlName="name" placeholder="Enter dealer name">
+              <mat-icon matSuffix>store</mat-icon>
+              <mat-error *ngIf="updateForm.get('name')?.invalid && updateForm.get('name')?.touched">
+                Dealer name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Phone *</mat-label>
+              <input matInput formControlName="phone" placeholder="Enter phone number">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="updateForm.get('phone')?.invalid && updateForm.get('phone')?.touched">
+                Phone is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>City *</mat-label>
+              <input matInput formControlName="city" placeholder="Enter city">
+              <mat-icon matSuffix>location_city</mat-icon>
+              <mat-error *ngIf="updateForm.get('city')?.invalid && updateForm.get('city')?.touched">
+                City is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>State *</mat-label>
+              <input matInput formControlName="state" placeholder="Enter state">
+              <mat-icon matSuffix>map</mat-icon>
+              <mat-error *ngIf="updateForm.get('state')?.invalid && updateForm.get('state')?.touched">
+                State is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Business Type *</mat-label>
+              <select matNativeControl formControlName="businessType">
+                <option value="">Select business type</option>
+                <option value="ELECTRONICS">Electronics</option>
+                <option value="GROCERY">Grocery</option>
+                <option value="PHARMACY">Pharmacy</option>
+                <option value="HARDWARE">Hardware</option>
+                <option value="CLOTHING">Clothing</option>
+                <option value="OTHER">Other</option>
+              </select>
+              <mat-icon matSuffix>business</mat-icon>
+              <mat-error *ngIf="updateForm.get('businessType')?.invalid && updateForm.get('businessType')?.touched">
+                Business type is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Contact Person *</mat-label>
+              <input matInput formControlName="contactPerson" placeholder="Enter contact person">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="updateForm.get('contactPerson')?.invalid && updateForm.get('contactPerson')?.touched">
+                Contact person is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="isUpdating">
+              <mat-icon>close</mat-icon>
+              Cancel
+            </button>
+            
+            <button mat-raised-button color="primary" type="submit" [disabled]="updateForm.invalid || isUpdating">
+              <mat-spinner *ngIf="isUpdating" diameter="20"></mat-spinner>
+              <mat-icon *ngIf="!isUpdating">save</mat-icon>
+              {{ isUpdating ? 'Updating...' : 'Update Dealer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

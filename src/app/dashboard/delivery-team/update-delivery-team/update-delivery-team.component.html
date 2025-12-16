@@ -1,0 +1,154 @@
+<div class="update-delivery-team-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item">Delivery Team</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Update</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">edit</mat-icon>
+        Update Delivery Team Member
+      </h1>
+      <p class="page-subtitle">Update team member information</p>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-section">
+    <div class="content-container">
+      
+      <!-- Search Section -->
+      <div class="search-section">
+        <div class="search-card">
+          <h3>Find Team Member</h3>
+          <div class="search-form">
+            <mat-form-field appearance="outline">
+              <mat-label>Team Member ID</mat-label>
+              <input matInput [(ngModel)]="teamMemberId" (keyup.enter)="onSearchTeamMember()" placeholder="Enter team member ID" type="number">
+              <mat-icon matSuffix>tag</mat-icon>
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="onSearchTeamMember()" [disabled]="isSearching || !teamMemberId">
+              <mat-spinner *ngIf="isSearching" diameter="20"></mat-spinner>
+              <mat-icon *ngIf="!isSearching">search</mat-icon>
+              {{ isSearching ? 'Searching...' : 'Search' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Update Form Section -->
+      <div *ngIf="selectedTeamMember" class="update-section">
+        <div class="team-member-info-card">
+          <h3>Team Member Information</h3>
+          <div class="member-details">
+            <div class="detail-item">
+              <span class="label">Name:</span>
+              <span class="value">{{ selectedTeamMember.name }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Email:</span>
+              <span class="value">{{ selectedTeamMember.email }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Status:</span>
+              <span class="value">{{ selectedTeamMember.status }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="update-form-card">
+          <h3>Update Information</h3>
+          <form [formGroup]="updateForm" (ngSubmit)="onUpdateTeamMember()" novalidate>
+            
+            <!-- Contact & Vehicle Info -->
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>Phone *</mat-label>
+                <input matInput formControlName="phone" placeholder="+919876543210">
+                <mat-icon matSuffix>phone</mat-icon>
+                <mat-error *ngIf="updateForm.get('phone')?.invalid && updateForm.get('phone')?.touched">
+                  Phone is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Vehicle Type *</mat-label>
+                <select matNativeControl formControlName="vehicleType">
+                  <option value="">Select vehicle type</option>
+                  <option value="BIKE">Bike</option>
+                  <option value="CAR">Car</option>
+                  <option value="LORRY">Lorry</option>
+                </select>
+                <mat-error *ngIf="updateForm.get('vehicleType')?.invalid && updateForm.get('vehicleType')?.touched">
+                  Vehicle type is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>License Number</mat-label>
+                <input matInput formControlName="licenseNumber" placeholder="DL1234567890">
+                <mat-icon matSuffix>badge</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Vehicle Number</mat-label>
+                <input matInput formControlName="vehicleNumber" placeholder="MH12AB1234">
+                <mat-icon matSuffix>confirmation_number</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- Address Info -->
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Street Address</mat-label>
+                <input matInput formControlName="streetAddress" placeholder="123 Delivery Lane">
+                <mat-icon matSuffix>home</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="city" placeholder="Mumbai">
+                <mat-icon matSuffix>location_city</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>State</mat-label>
+                <input matInput formControlName="state" placeholder="Maharashtra">
+                <mat-icon matSuffix>map</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Postal Code</mat-label>
+                <input matInput formControlName="postalCode" placeholder="400001">
+                <mat-icon matSuffix>markunread_mailbox</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Country</mat-label>
+                <input matInput formControlName="country" placeholder="Sri Lanka">
+                <mat-icon matSuffix>flag</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+              <button mat-stroked-button type="button" (click)="onClear()" [disabled]="isUpdating">
+                <mat-icon>clear</mat-icon>
+                Clear
+              </button>
+              
+              <button mat-raised-button color="primary" type="submit" [disabled]="!updateForm.valid || isUpdating">
+                <mat-spinner *ngIf="isUpdating" diameter="20"></mat-spinner>
+                <mat-icon *ngIf="!isUpdating">save</mat-icon>
+                {{ isUpdating ? 'Updating...' : 'Update Team Member' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

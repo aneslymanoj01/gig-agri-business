@@ -1,0 +1,25 @@
+<div class="page-header">
+  <h1><mat-icon>shopping_cart</mat-icon> Purchase Orders</h1>
+</div>
+
+<div class="options-container">
+  <mat-card class="option-card" (click)="navigateToCreate()">
+    <mat-card-content>
+      <div class="card-icon">
+        <mat-icon>add_shopping_cart</mat-icon>
+      </div>
+      <h3>Create Purchase Order</h3>
+      <p>Create new purchase orders for suppliers</p>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="option-card" (click)="navigateToView()">
+    <mat-card-content>
+      <div class="card-icon">
+        <mat-icon>list_alt</mat-icon>
+      </div>
+      <h3>View Purchase Orders</h3>
+      <p>View and manage existing purchase orders</p>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,161 @@
+<div class="approve-reject-batches-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item">Stock Requests</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Approve/Reject</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">gavel</mat-icon>
+        Approve/Reject Request Batches
+      </h1>
+      <p class="page-subtitle">Review and process pending stock request batches</p>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-section">
+    <div class="content-container">
+      
+      <!-- Search Section -->
+      <div class="search-section">
+        <div class="search-card">
+          <h3>Find Request Batch</h3>
+          <div class="search-form">
+            <mat-form-field appearance="outline">
+              <mat-label>Batch ID</mat-label>
+              <input matInput [(ngModel)]="batchId" (keyup.enter)="onSearchBatch()" placeholder="Enter batch ID">
+              <mat-icon matSuffix>tag</mat-icon>
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="onSearchBatch()" [disabled]="isSearching || !batchId">
+              <mat-spinner *ngIf="isSearching" diameter="20"></mat-spinner>
+              <mat-icon *ngIf="!isSearching">search</mat-icon>
+              {{ isSearching ? 'Searching...' : 'Search' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Batch Details Section -->
+      <div *ngIf="selectedBatch" class="batch-details-section">
+        <div class="batch-info-card">
+          <h3>Batch Information</h3>
+          <div class="batch-details">
+            <div class="detail-item">
+              <span class="label">Batch ID:</span>
+              <span class="value">{{ selectedBatch.id }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Distributor ID:</span>
+              <span class="value">{{ selectedBatch.distributorId }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Priority:</span>
+              <span class="value priority-badge" [class]="'priority-' + selectedBatch.priority.toLowerCase()">
+                {{ selectedBatch.priority }}
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Status:</span>
+              <span class="value status-badge" [class]="'status-' + selectedBatch.status.toLowerCase()">
+                {{ selectedBatch.status }}
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Requested At:</span>
+              <span class="value">{{ selectedBatch.requestedAt | date:'medium' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Notes:</span>
+              <span class="value">{{ selectedBatch.notes || '-' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="products-card">
+          <h3>Products</h3>
+          <div class="products-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product ID</th>
+                  <th>Product Name</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of selectedBatch.items">
+                  <td>{{ item.productId }}</td>
+                  <td>{{ item.productName }}</td>
+                  <td>{{ item.quantity }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Actions Section (Only for PENDING status) -->
+        <div *ngIf="selectedBatch.status === 'PENDING'" class="actions-card">
+          <h3>Actions</h3>
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" (click)="openApproveDialog()" [disabled]="isProcessing">
+              <mat-icon>check_circle</mat-icon>
+              Approve
+            </button>
+            <button mat-raised-button color="warn" (click)="openRejectDialog()" [disabled]="isProcessing">
+              <mat-icon>cancel</mat-icon>
+              Reject
+            </button>
+          </div>
+        </div>
+
+        <!-- Already Processed Message -->
+        <div *ngIf="selectedBatch.status !== 'PENDING'" class="processed-message">
+          <mat-icon>info</mat-icon>
+          <span>This batch has already been {{ selectedBatch.status.toLowerCase() }}.</span>
+          <span *ngIf="selectedBatch.rejectionReason"> Reason: {{ selectedBatch.rejectionReason }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remarks Dialog -->
+  <div *ngIf="showRemarksDialog" class="modal-overlay" (click)="closeRemarksDialog()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ actionType === 'APPROVE' ? 'Approve' : 'Reject' }} Batch</h3>
+        <button mat-icon-button (click)="closeRemarksDialog()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Remarks</mat-label>
+          <textarea matInput [(ngModel)]="remarks" rows="4" 
+                    [placeholder]="actionType === 'APPROVE' ? 'Enter approval remarks...' : 'Enter rejection reason...'">
+          </textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="modal-actions">
+        <button mat-stroked-button (click)="closeRemarksDialog()" [disabled]="isProcessing">
+          Cancel
+        </button>
+        <button mat-raised-button 
+                [color]="actionType === 'APPROVE' ? 'primary' : 'warn'" 
+                (click)="processBatch()" 
+                [disabled]="!remarks.trim() || isProcessing">
+          <mat-spinner *ngIf="isProcessing" diameter="20"></mat-spinner>
+          <mat-icon *ngIf="!isProcessing">{{ actionType === 'APPROVE' ? 'check_circle' : 'cancel' }}</mat-icon>
+          {{ isProcessing ? 'Processing...' : (actionType === 'APPROVE' ? 'Approve' : 'Reject') }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

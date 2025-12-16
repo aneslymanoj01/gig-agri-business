@@ -1,0 +1,59 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="logo-section">
+      <img src="assets/images/logo.jpeg" alt="CIC Logo" class="logo">
+    </div>
+    
+    <h1 class="app-title">CIC Inventory</h1>
+    <p class="app-subtitle">Agricultural Distribution Management</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" autocomplete="off">
+      <div class="form-group">
+        <div class="input-wrapper">
+          <input 
+            type="text"
+            formControlName="userName" 
+            class="form-input"
+            placeholder=""
+            autocomplete="new-password"
+            name="username-new"
+            readonly
+            onfocus="this.removeAttribute('readonly');"
+            [class.error]="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched">
+          <mat-icon class="input-icon">person</mat-icon>
+        </div>
+        <div class="error-message" *ngIf="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched">
+          {{ getErrorMessage('userName') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="input-wrapper">
+          <input 
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password" 
+            class="form-input"
+            placeholder=""
+            autocomplete="new-password"
+            readonly
+            onfocus="this.removeAttribute('readonly');"
+            [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <button type="button" class="password-toggle" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          {{ getErrorMessage('password') }}
+        </div>
+      </div>
+
+      <button 
+        type="submit" 
+        class="sign-in-btn"
+        [disabled]="isLoading">
+        <span *ngIf="!isLoading">Sign In</span>
+        <span *ngIf="isLoading">Signing In...</span>
+      </button>
+    </form>
+  </div>
+</div>

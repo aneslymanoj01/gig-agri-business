@@ -1,0 +1,306 @@
+.search-distributor-page {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+// Header Section - Matching Add Distributor Style
+.page-header {
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+  margin: -24px -24px 0 -24px;
+  padding: 20px 24px 24px;
+  color: white;
+  position: relative;
+  width: calc(100% + 48px);
+  box-sizing: border-box;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+    border-radius: 0 0 12px 12px;
+  }
+}
+
+.header-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  opacity: 0.9;
+  
+  .breadcrumb-item {
+    &.active {
+      font-weight: 500;
+    }
+  }
+  
+  .breadcrumb-separator {
+    font-size: 14px;
+    margin: 0 6px;
+    opacity: 0.7;
+  }
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  
+  .title-icon {
+    margin-right: 8px;
+    font-size: 28px;
+  }
+}
+
+.page-subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  margin: 0;
+  font-weight: 400;
+}
+
+// Content Section - Matching Form Style
+.content-section {
+  padding: 32px 24px 24px;
+  background: #fafafa;
+  min-height: calc(100vh - 120px);
+}
+
+.content-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Actions Bar
+.actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 0;
+  
+  .results-count {
+    color: #666;
+    font-size: 14px;
+  }
+}
+
+// Section Header - Simplified like form cards
+.section-header {
+  margin-bottom: 24px;
+  
+  h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    margin: 0 0 8px 0;
+  }
+  
+  .section-divider {
+    height: 1px;
+    background: #e0e0e0;
+    width: 100%;
+  }
+}
+
+// Loading State
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  
+  p {
+    margin-top: 16px;
+    color: #666;
+    font-size: 14px;
+  }
+}
+
+// Empty State
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  
+  .empty-icon {
+    font-size: 64px;
+    color: #ccc;
+    margin-bottom: 16px;
+  }
+  
+  h3 {
+    font-size: 20px;
+    font-weight: 500;
+    color: #333;
+    margin: 0 0 8px 0;
+  }
+  
+  p {
+    color: #666;
+    margin: 0 0 24px 0;
+    font-size: 14px;
+  }
+}
+
+// Table Container - Clean and Minimalist
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.distributors-table {
+  width: 100%;
+  min-width: 600px;
+  
+  // Header styling - Distinguished with subtle background
+  .mat-mdc-header-row {
+    background: #F7F7F7;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .mat-mdc-header-cell {
+    font-weight: 700;
+    color: #333;
+    font-size: 14px;
+    padding: 18px 16px;
+    border-right: none;
+    text-align: left;
+  }
+  
+  // Row styling - Only horizontal dividers
+  .mat-mdc-row {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background: #F5F8FF;
+    }
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  
+  .mat-mdc-cell {
+    padding: 18px 16px;
+    font-size: 14px;
+    color: #333;
+    border-right: none;
+    text-align: left;
+  }
+  
+  // ID Column
+  .id-column {
+    width: 80px;
+    text-align: center;
+    font-weight: 500;
+    color: #666;
+  }
+  
+  // Links styling
+  .email-link, .contact-link {
+    color: #4CAF50;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Pagination
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding: 16px 0;
+  
+  .pagination-info {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .page-numbers {
+      display: flex;
+      gap: 4px;
+      margin: 0 8px;
+      
+      button {
+        min-width: 36px;
+        height: 36px;
+        border-radius: 4px;
+        
+        &.active {
+          background: #4CAF50;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .content-section {
+    padding: 16px 12px;
+  }
+  
+  .actions-bar {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    
+    .results-count {
+      text-align: center;
+    }
+  }
+  
+  .distributors-table {
+    font-size: 12px;
+    
+    .mat-mdc-header-cell,
+    .mat-mdc-cell {
+      padding: 12px 8px;
+    }
+  }
+  
+  .pagination-container {
+    flex-direction: column;
+    gap: 12px;
+    
+    .pagination-controls {
+      justify-content: center;
+    }
+  }
+}

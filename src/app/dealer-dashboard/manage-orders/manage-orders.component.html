@@ -1,0 +1,43 @@
+<div class="manage-orders-page">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item active">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Manage Orders</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">shopping_cart</mat-icon>
+        Manage Orders
+      </h1>
+    </div>
+  </div>
+
+  <div class="content-container">
+    <div class="options-grid">
+      <div class="option-card" (click)="navigateToNewOrder()">
+        <div class="card-icon">
+          <mat-icon>add_shopping_cart</mat-icon>
+        </div>
+        <h3>New Order</h3>
+        <p>Create a new order request</p>
+      </div>
+
+      <div class="option-card" (click)="navigateToViewOrders()">
+        <div class="card-icon">
+          <mat-icon>list_alt</mat-icon>
+        </div>
+        <h3>View Orders</h3>
+        <p>View all your orders</p>
+      </div>
+
+      <div class="option-card" (click)="navigateToTrackOrder()">
+        <div class="card-icon">
+          <mat-icon>track_changes</mat-icon>
+        </div>
+        <h3>Track My Order</h3>
+        <p>Track order status and delivery</p>
+      </div>
+    </div>
+  </div>
+</div>

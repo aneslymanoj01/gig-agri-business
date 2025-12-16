@@ -1,0 +1,75 @@
+<div class="dashboard-container">
+  <mat-sidenav-container class="sidenav-container">
+    
+    <!-- Sidebar -->
+    <mat-sidenav 
+      #sidenav 
+      [opened]="isSidenavOpen" 
+      mode="side" 
+      class="sidenav"
+      [fixedInViewport]="true">
+      
+      <div class="sidenav-header">
+        <img src="assets/images/logo.jpeg" alt="Logo" class="nav-logo">
+        <div class="nav-title">
+          <h3>CIC Inventory</h3>
+          <p>Master Dashboard</p>
+        </div>
+      </div>
+
+      <mat-nav-list class="nav-menu">
+        <mat-list-item 
+          *ngFor="let item of menuItems" 
+          [class.active]="isRouteActive(item.route)"
+          (click)="navigateToRoute(item.route)">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <div matListItemTitle>{{ item.label }}</div>
+          <div matListItemLine>{{ item.description }}</div>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <!-- Main Content -->
+    <mat-sidenav-content class="main-content">
+      
+      <!-- Top Toolbar -->
+      <mat-toolbar class="top-toolbar" color="primary">
+        <button mat-icon-button (click)="toggleSidenav()" class="menu-button">
+          <mat-icon>menu</mat-icon>
+        </button>
+        
+        <span class="toolbar-title">Welcome</span>
+        
+        <span class="spacer"></span>
+        
+        <div class="user-menu-container">
+          <div class="user-info-display" (click)="toggleUserMenu()">
+            <div class="user-details">
+              <span class="username">{{ currentUser?.sub || 'Master Admin' }}</span>
+              <span class="user-type">{{ currentUser?.role || 'MASTER' }}</span>
+            </div>
+            <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+          </div>
+          
+          <div class="user-dropdown" *ngIf="showUserMenu">
+            <button (click)="navigateToChangePassword()" >
+              <mat-icon>lock</mat-icon>
+              <span>Change Password</span>
+            </button>
+            <button (click)="onLogout()" [disabled]="isLoggingOut">
+              <mat-icon *ngIf="!isLoggingOut">logout</mat-icon>
+              <mat-spinner *ngIf="isLoggingOut" diameter="16"></mat-spinner>
+              <span>{{ isLoggingOut ? 'Logging out...' : 'Logout' }}</span>
+            </button>
+          </div>
+        </div>
+      </mat-toolbar>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+    
+  </mat-sidenav-container>
+</div>

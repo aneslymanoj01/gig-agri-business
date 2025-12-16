@@ -1,0 +1,166 @@
+<div class="create-purchase-order-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item" (click)="onCancel()">Purchase Orders</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Create New</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">add_shopping_cart</mat-icon>
+        Create Purchase Order
+      </h1>
+      <p class="page-subtitle">Create new stock request for your inventory</p>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="content-container">
+    
+    <!-- Available Products -->
+    <mat-card class="products-section">
+      <mat-card-header>
+        <mat-card-title>Available Products</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        
+        <!-- Search Filter -->
+        <div class="search-section">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search Products</mat-label>
+            <input matInput [(ngModel)]="searchTerm" (input)="filterProducts()" 
+                   placeholder="Search by name, description, SKU, or category">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="isLoading" class="loading-container">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Loading products...</p>
+        </div>
+        
+        <div *ngIf="!isLoading && filteredProducts.length === 0 && searchTerm" class="no-results">
+          <mat-icon>search_off</mat-icon>
+          <p>No products found matching "{{searchTerm}}"</p>
+        </div>
+        
+        <div *ngIf="!isLoading" class="products-grid">
+          <div *ngFor="let product of filteredProducts" class="product-card" (click)="addItem(product)">
+            <div class="product-info">
+              <h4>{{product.name}}</h4>
+              <p class="product-description">{{product.description}}</p>
+              <div class="product-details">
+                <span class="price">LKR {{ product.unitPrice }}</span>
+                <span class="stock">Stock: {{product.stockQuantity}}</span>
+                <span class="sku">{{product.sku}}</span>
+              </div>
+            </div>
+            <button mat-mini-fab color="primary">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Selected Items -->
+    <mat-card class="selected-items-section">
+      <mat-card-header>
+        <mat-card-title>Selected Items ({{selectedItems.length}})</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        
+        <div *ngIf="selectedItems.length === 0" class="empty-selection">
+          <mat-icon>shopping_cart</mat-icon>
+          <p>No items selected. Click on products above to add them.</p>
+        </div>
+
+        <div *ngIf="selectedItems.length > 0" class="selected-items-list">
+          <div *ngFor="let item of selectedItems; let i = index" class="selected-item">
+            <div class="item-info">
+              <h4>{{item.product.name}}</h4>
+              <p>{{item.product.description}}</p>
+              <span class="unit-price">LKR {{ item.product.unitPrice }} per unit</span>
+            </div>
+            
+            <div class="item-controls">
+              <mat-form-field appearance="outline" class="quantity-field">
+                <mat-label>Quantity</mat-label>
+                <input matInput type="number" min="1" [(ngModel)]="item.quantity" 
+                       (ngModelChange)="updateQuantity(item, item.quantity)">
+              </mat-form-field>
+              
+              <div class="item-total">
+                <span class="total-label">Total:</span>
+                <span class="total-amount">LKR {{ item.totalPrice }}</span>
+              </div>
+              
+              <button mat-icon-button color="warn" (click)="removeItem(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div *ngIf="selectedItems.length > 0" class="order-summary">
+          <div class="summary-row">
+            <span class="label">Total Items:</span>
+            <span class="value">{{selectedItems.length}}</span>
+          </div>
+          <div class="summary-row total">
+            <span class="label">Total Amount:</span>
+            <span class="value">LKR {{ getTotalAmount() }}</span>
+          </div>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Order Details -->
+    <mat-card class="order-details-section">
+      <mat-card-header>
+        <mat-card-title>Order Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Priority</mat-label>
+            <select matNativeControl [(ngModel)]="priority" name="priority">
+              <option value="HIGH">High</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="LOW">Low</option>
+            </select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Notes (Optional)</mat-label>
+            <textarea matInput [(ngModel)]="notes" rows="3" 
+                      placeholder="Enter any additional notes"></textarea>
+          </mat-form-field>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" 
+              [disabled]="selectedItems.length === 0 || isSubmitting"
+              (click)="onSubmit()">
+        <mat-icon *ngIf="isSubmitting">hourglass_empty</mat-icon>
+        <mat-icon *ngIf="!isSubmitting">send</mat-icon>
+        {{isSubmitting ? 'Submitting...' : 'Submit Request'}}
+      </button>
+    </div>
+
+  </div>
+
+</div>

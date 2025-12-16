@@ -1,0 +1,176 @@
+<div class="add-distributor-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item">Distributors</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Add New</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">person_add</mat-icon>
+        Add New Distributor
+      </h1>
+      <p class="page-subtitle">Create a new distributor account to expand your network</p>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section">
+    <div class="form-container">
+      <form [formGroup]="distributorForm" (ngSubmit)="onSubmit()" novalidate>
+        
+        <!-- Basic Information Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">business</mat-icon>
+            <div class="card-title">
+              <h3>Basic Information</h3>
+              <p>Enter the distributor's basic details</p>
+            </div>
+          </div>
+          
+          <div class="form-grid basic-info">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Distributor Name *</mat-label>
+              <input matInput formControlName="name" placeholder="e.g., Ceylon Agro Distributors">
+              <mat-icon matSuffix>business</mat-icon>
+              <mat-error *ngIf="distributorForm.get('name')?.invalid && distributorForm.get('name')?.touched">
+                Distributor name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="username-field">
+              <mat-label>Username *</mat-label>
+              <input matInput formControlName="userName" placeholder="e.g., ceylon_agro" (blur)="checkUsername()">
+              <mat-icon matSuffix *ngIf="usernameCheckLoading" class="loading-icon">hourglass_empty</mat-icon>
+              <mat-icon matSuffix *ngIf="usernameValid === true" class="success-icon">check_circle</mat-icon>
+              <mat-icon matSuffix *ngIf="usernameValid === false" class="error-icon">error</mat-icon>
+              <mat-error *ngIf="distributorForm.get('userName')?.invalid && distributorForm.get('userName')?.touched">
+                Username is required
+              </mat-error>
+              <mat-hint *ngIf="usernameValid === true" class="success-hint">
+                <mat-icon class="hint-icon">check</mat-icon>
+                Username is available
+              </mat-hint>
+              <mat-hint *ngIf="usernameValid === false" class="error-hint">
+                <mat-icon class="hint-icon">close</mat-icon>
+                {{ usernameError }}
+              </mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Contact Information Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">contact_mail</mat-icon>
+            <div class="card-title">
+              <h3>Contact Information</h3>
+              <p>How to reach the distributor</p>
+            </div>
+          </div>
+          
+          <div class="form-grid contact-info">
+            <mat-form-field appearance="outline">
+              <mat-label>Email Address *</mat-label>
+              <input matInput formControlName="email" type="email" placeholder="contact@example.com">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="distributorForm.get('email')?.invalid && distributorForm.get('email')?.touched">
+                <span *ngIf="distributorForm.get('email')?.hasError('required')">Email is required</span>
+                <span *ngIf="distributorForm.get('email')?.hasError('email')">Please enter a valid email</span>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Contact Number *</mat-label>
+              <input matInput formControlName="contactNo" placeholder="+94771234567">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="distributorForm.get('contactNo')?.invalid && distributorForm.get('contactNo')?.touched">
+                Contact number is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Contact Person *</mat-label>
+              <input matInput formControlName="contactPerson" placeholder="e.g., Nimal Perera">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="distributorForm.get('contactPerson')?.invalid && distributorForm.get('contactPerson')?.touched">
+                Contact person is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Address Information Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">location_on</mat-icon>
+            <div class="card-title">
+              <h3>Address Information</h3>
+              <p>Physical location details</p>
+            </div>
+          </div>
+          
+          <div class="form-grid address-info">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Street Address *</mat-label>
+              <input matInput formControlName="streetAddress" placeholder="123 Galle Road">
+              <mat-icon matSuffix>home</mat-icon>
+              <mat-error *ngIf="distributorForm.get('streetAddress')?.invalid && distributorForm.get('streetAddress')?.touched">
+                Street address is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>City *</mat-label>
+              <input matInput formControlName="city" placeholder="Colombo">
+              <mat-icon matSuffix>location_city</mat-icon>
+              <mat-error *ngIf="distributorForm.get('city')?.invalid && distributorForm.get('city')?.touched">
+                City is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Postal Code *</mat-label>
+              <input matInput formControlName="postalCode" placeholder="00100">
+              <mat-icon matSuffix>markunread_mailbox</mat-icon>
+              <mat-error *ngIf="distributorForm.get('postalCode')?.invalid && distributorForm.get('postalCode')?.touched">
+                Postal code is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="country-field">
+              <mat-label>Country</mat-label>
+              <input matInput formControlName="country" readonly>
+              <mat-icon matSuffix>flag</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <div class="action-buttons">
+            <button mat-stroked-button type="button" (click)="onClear()" [disabled]="isLoading" class="clear-btn">
+              <mat-icon>refresh</mat-icon>
+              Clear Form
+            </button>
+            
+            <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="isLoading" class="cancel-btn">
+              <mat-icon>close</mat-icon>
+              Cancel
+            </button>
+            
+            <button mat-raised-button color="primary" type="submit" [disabled]="!canSubmit()" class="create-btn">
+              <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+              <mat-icon *ngIf="!isLoading">add_circle</mat-icon>
+              {{ isLoading ? 'Creating...' : 'Create Distributor' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

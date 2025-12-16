@@ -1,0 +1,210 @@
+<div class="assign-delivery-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item" (click)="goBack()">Manage Orders</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Assign Delivery</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">local_shipping</mat-icon>
+        Assign Delivery Team
+      </h1>
+      <p class="page-subtitle">Assign delivery teams to approved orders</p>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-container">
+    
+    <!-- Order Search Section -->
+    <div class="search-section">
+      <div class="search-container">
+        <div class="search-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">search</mat-icon>
+            <div class="card-title">
+              <h3>Search Order</h3>
+              <p>Enter order ID to assign delivery team</p>
+            </div>
+          </div>
+          
+          <div class="search-form">
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>Order ID</mat-label>
+                <input matInput type="number" [(ngModel)]="searchOrderId" placeholder="Enter order ID">
+                <mat-icon matSuffix>receipt</mat-icon>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-actions">
+              <button mat-raised-button color="primary" (click)="searchOrder()" [disabled]="isLoadingOrder">
+                <mat-icon *ngIf="isLoadingOrder">hourglass_empty</mat-icon>
+                <mat-icon *ngIf="!isLoadingOrder">search</mat-icon>
+                {{isLoadingOrder ? 'Searching...' : 'Search Order'}}
+              </button>
+              <button mat-stroked-button (click)="clearOrderSearch()">
+                <mat-icon>clear</mat-icon> Clear Search
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Details Section -->
+    <div *ngIf="order" class="order-section">
+      <mat-card class="order-card">
+        <mat-card-header>
+          <div class="order-header">
+            <div class="order-info">
+              <h3 class="order-id">Order #{{order.orderId}}</h3>
+              <div class="order-meta">
+                <span class="created-date">
+                  <mat-icon>schedule</mat-icon>
+                  Created: {{order.createdAt | date:'MMM dd, yyyy HH:mm'}}
+                </span>
+                <span class="total-amount">
+                  <mat-icon>attach_money</mat-icon>
+                  Total: LKR {{order.totalAmount}}
+                </span>
+              </div>
+            </div>
+            <div class="status-badge" [style.background-color]="getStatusColor(order.status)">
+              <mat-icon>{{getStatusIcon(order.status)}}</mat-icon>
+              <span>{{order.status}}</span>
+            </div>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content *ngIf="order.status !== 'APPROVED'">
+          <div class="status-message">
+            <mat-icon>info</mat-icon>
+            <span>This order cannot be assigned for delivery. Only APPROVED orders can be assigned.</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Delivery Team Search Section -->
+    <div *ngIf="order && order.status === 'APPROVED'" class="delivery-search-section">
+      <div class="search-container">
+        <div class="search-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">people</mat-icon>
+            <div class="card-title">
+              <h3>Select Delivery Team</h3>
+              <p>Search and select a delivery team member</p>
+            </div>
+          </div>
+          
+          <div class="search-form">
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>Team Member Name</mat-label>
+                <input matInput [(ngModel)]="teamSearchName" placeholder="Enter name">
+                <mat-icon matSuffix>person</mat-icon>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Phone Number</mat-label>
+                <input matInput [(ngModel)]="teamSearchPhone" placeholder="Enter phone">
+                <mat-icon matSuffix>phone</mat-icon>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-actions">
+              <button mat-raised-button color="primary" (click)="searchDeliveryTeams()" [disabled]="isLoadingTeams">
+                <mat-icon *ngIf="isLoadingTeams">hourglass_empty</mat-icon>
+                <mat-icon *ngIf="!isLoadingTeams">search</mat-icon>
+                {{isLoadingTeams ? 'Searching...' : 'Search Teams'}}
+              </button>
+              <button mat-stroked-button (click)="clearTeamSearch()">
+                <mat-icon>clear</mat-icon> Clear Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Teams List -->
+      <div *ngIf="deliveryTeams.length > 0" class="teams-section">
+        <h4>Available Delivery Teams ({{deliveryTeams.length}} found)</h4>
+        <div class="teams-grid">
+          <div *ngFor="let team of deliveryTeams" 
+               class="team-card" 
+               [class.selected]="selectedTeam?.id === team.id"
+               (click)="selectTeam(team)">
+            <div class="team-info">
+              <h5>{{team.name}}</h5>
+              <p class="team-phone">{{team.phone}}</p>
+              <p class="team-email">{{team.email}}</p>
+              <div class="team-details">
+                <span class="vehicle-type">{{team.vehicleType}}</span>
+                <span class="vehicle-number">{{team.vehicleNumber}}</span>
+              </div>
+              <p class="team-address">{{team.city}}, {{team.state}}</p>
+            </div>
+            <mat-icon *ngIf="selectedTeam?.id === team.id" class="selected-icon">check_circle</mat-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Teams Found -->
+      <div *ngIf="!isLoadingTeams && deliveryTeams.length === 0 && (teamSearchName || teamSearchPhone)" class="no-teams">
+        <mat-icon>search_off</mat-icon>
+        <p>No delivery teams found matching your search criteria.</p>
+      </div>
+    </div>
+
+    <!-- Assignment Form -->
+    <div *ngIf="selectedTeam" class="assignment-section">
+      <mat-card class="assignment-card">
+        <mat-card-header>
+          <mat-card-title>Delivery Assignment</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="selected-team-info">
+            <h4>Selected Team: {{selectedTeam.name}}</h4>
+            <p>Phone: {{selectedTeam.phone}} | Email: {{selectedTeam.email}}</p>
+            <p>Vehicle: {{selectedTeam.vehicleType}} ({{selectedTeam.vehicleNumber}}) | Location: {{selectedTeam.city}}</p>
+          </div>
+
+          <div class="assignment-form">
+            <div class="date-field">
+              <label for="deliveryDate">Expected Delivery Date *</label>
+              <input type="date" 
+                     id="deliveryDate"
+                     [(ngModel)]="expectedDeliveryDate" 
+                     class="date-input"
+                     [min]="getTomorrowDate()">
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Special Instructions (Optional)</mat-label>
+              <textarea matInput [(ngModel)]="specialInstructions" rows="3" 
+                        placeholder="Enter any special delivery instructions"></textarea>
+              <mat-icon matSuffix>note</mat-icon>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions class="assignment-actions">
+          <button mat-raised-button class="assign-btn" 
+                  (click)="assignDelivery()" 
+                  [disabled]="!expectedDeliveryDate || isAssigning">
+            <mat-icon *ngIf="isAssigning">hourglass_empty</mat-icon>
+            <mat-icon *ngIf="!isAssigning">assignment_ind</mat-icon>
+            {{isAssigning ? 'Assigning...' : 'Assign Delivery'}}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+  </div>
+
+</div>

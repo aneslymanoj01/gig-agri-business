@@ -1,0 +1,78 @@
+<div class="dashboard-container">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened class="sidenav">
+      <div class="sidenav-header">
+        <img src="assets/images/logo.jpeg" alt="CIC Logo" class="nav-logo">
+        <div class="nav-title">
+          <h3>CIC Inventory</h3>
+          <p>Distributor Dashboard</p>
+        </div>
+      </div>
+
+      <div class="nav-menu">
+        <div class="nav-section">
+          <h3>Dealer Management</h3>
+          <a routerLink="/distributor-dashboard/dealers" routerLinkActive="active" class="nav-item">
+            <mat-icon>people</mat-icon>
+            <span>Manage Dealers</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <h3>Inventory</h3>
+          <a routerLink="/distributor-dashboard/inventory" routerLinkActive="active" class="nav-item">
+            <mat-icon>inventory</mat-icon>
+            <span>View Inventory</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <h3>Orders</h3>
+          <a routerLink="/distributor-dashboard/purchase-orders" routerLinkActive="active" class="nav-item">
+            <mat-icon>shopping_cart</mat-icon>
+            <span>Purchase Orders</span>
+          </a>
+          <a routerLink="/distributor-dashboard/manage-orders" routerLinkActive="active" class="nav-item">
+            <mat-icon>assignment</mat-icon>
+            <span>Manage Orders</span>
+          </a>
+        </div>
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="main-content">
+      <mat-toolbar class="top-toolbar" color="primary">
+        <button mat-icon-button class="menu-button" (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="toolbar-title">Welcome</span>
+        <span class="spacer"></span>
+        
+        <div class="user-menu-container">
+          <div class="user-info-display" (click)="toggleUserMenu()">
+            <div class="user-details">
+              <span class="username">{{ currentUser?.sub || 'Distributor' }}</span>
+              <span class="user-type">{{ currentUser?.role || 'DISTRIBUTOR' }}</span>
+            </div>
+            <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+          </div>
+          
+          <div class="user-dropdown" *ngIf="showUserMenu">
+            <button (click)="navigateToChangePassword()">
+              <mat-icon>lock</mat-icon>
+              <span>Change Password</span>
+            </button>
+            <button (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </mat-toolbar>
+
+      <div class="page-content">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

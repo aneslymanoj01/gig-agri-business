@@ -1,0 +1,83 @@
+<div class="view-orders-page">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item" (click)="goBack()">Manage Orders</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">View Orders</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">list_alt</mat-icon>
+        View Orders
+      </h1>
+    </div>
+  </div>
+
+  <div class="content-container">
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <div class="filter-card">
+        <div class="filter-content">
+          <label>Filter by Status:</label>
+          <select [(ngModel)]="selectedStatus" (change)="onStatusChange()" class="status-filter">
+            <option *ngFor="let status of statusOptions" [value]="status.value">
+              {{ status.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-message">Loading orders...</div>
+
+    <!-- Orders List -->
+    <div *ngIf="!loading && filteredOrders.length > 0" class="orders-section">
+      <div *ngFor="let order of filteredOrders" class="order-card">
+        <div class="order-header" (click)="toggleOrderDetails(order.orderId)">
+          <div class="order-info">
+            <div class="order-id">Order #{{ order.orderId }}</div>
+            <div class="order-meta">
+              <span class="status-badge" [class]="getStatusClass(order.status)">
+                {{ order.status }}
+              </span>
+              <span class="order-date">{{ formatDate(order.createdAt) }}</span>
+            </div>
+          </div>
+          <div class="order-summary">
+            <div class="amount">LKR {{ order.totalAmount }}</div>
+            <div class="item-count">{{ order.itemCount }} items</div>
+            <mat-icon class="expand-icon" [class.expanded]="expandedOrderId === order.orderId">
+              expand_more
+            </mat-icon>
+          </div>
+        </div>
+
+        <!-- Order Details -->
+        <div *ngIf="expandedOrderId === order.orderId" class="order-details">
+          <h4>Order Items:</h4>
+          <div class="items-list">
+            <div *ngFor="let item of order.items" class="item-row">
+              <span class="item-name">{{ item.productName }}</span>
+              <span class="item-quantity">Qty: {{ item.quantity }}</span>
+              <span class="item-price">LKR {{ item.unitPrice }} each</span>
+              <span class="item-total">LKR {{ item.quantity * item.unitPrice }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Orders -->
+    <div *ngIf="!loading && filteredOrders.length === 0 && !error" class="no-orders">
+      <mat-icon>shopping_cart_outlined</mat-icon>
+      <h3>No orders found</h3>
+      <p>{{ selectedStatus ? 'No orders with selected status' : 'You haven\'t placed any orders yet' }}</p>
+    </div>
+  </div>
+</div>

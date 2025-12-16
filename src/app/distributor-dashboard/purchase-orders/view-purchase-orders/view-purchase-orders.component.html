@@ -1,0 +1,157 @@
+<div class="view-purchase-orders-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item" (click)="goBack()">Purchase Orders</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">View Orders</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">list_alt</mat-icon>
+        View Purchase Orders
+      </h1>
+      <p class="page-subtitle">View and track your stock request batches</p>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-container">
+    
+    <!-- Filters Section -->
+    <mat-card class="filters-section">
+      <mat-card-content>
+        <div class="filters-row">
+          
+          <!-- Status Filter -->
+          <mat-form-field appearance="outline">
+            <mat-label>Filter by Status</mat-label>
+            <select matNativeControl [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()">
+              <option *ngFor="let option of statusOptions" [value]="option.value">
+                {{option.label}}
+              </option>
+            </select>
+          </mat-form-field>
+
+          <!-- Search by ID -->
+          <mat-form-field appearance="outline">
+            <mat-label>Search by Order ID</mat-label>
+            <input matInput [(ngModel)]="searchId" placeholder="Enter order ID (e.g., BR_2025_001)">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          <!-- Action Buttons -->
+          <div class="filter-actions">
+            <button mat-raised-button color="primary" (click)="onSearch()">
+              <mat-icon>search</mat-icon> Search
+            </button>
+            <button mat-button (click)="clearSearch()">
+              <mat-icon>clear</mat-icon> Clear
+            </button>
+            <button mat-raised-button color="accent" (click)="createNewOrder()">
+              <mat-icon>add</mat-icon> Create New
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading purchase orders...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && filteredRequests.length === 0" class="empty-state">
+      <mat-icon>shopping_cart</mat-icon>
+      <h3>No Purchase Orders Found</h3>
+      <p *ngIf="selectedStatus === 'ALL' && !searchId">You haven't created any purchase orders yet.</p>
+      <p *ngIf="selectedStatus !== 'ALL' || searchId">No orders match your current filters.</p>
+      <button mat-raised-button color="primary" (click)="createNewOrder()">
+        <mat-icon>add</mat-icon> Create Your First Order
+      </button>
+    </div>
+
+    <!-- Orders List -->
+    <div *ngIf="!isLoading && filteredRequests.length > 0" class="orders-container">
+      
+      <div *ngFor="let request of filteredRequests" class="order-card">
+        <mat-card>
+          
+          <!-- Card Header -->
+          <mat-card-header>
+            <div class="order-header">
+              <div class="order-info">
+                <h3 class="order-id">{{request.id}}</h3>
+                <div class="order-meta">
+                  <span class="requested-date">
+                    <mat-icon>schedule</mat-icon>
+                    Requested: {{request.requestedAt | date:'MMM dd, yyyy HH:mm'}}
+                  </span>
+                  <span class="priority-badge" [style.background-color]="getPriorityColor(request.priority)">
+                    {{request.priority}}
+                  </span>
+                </div>
+              </div>
+              <div class="status-badge" [style.background-color]="getStatusColor(request.status)">
+                <mat-icon>{{getStatusIcon(request.status)}}</mat-icon>
+                <span>{{request.status}}</span>
+              </div>
+            </div>
+          </mat-card-header>
+
+          <!-- Card Content -->
+          <mat-card-content>
+            
+            <!-- Items List -->
+            <div class="items-section">
+              <h4>Items ({{request.items.length}})</h4>
+              <div class="items-list">
+                <div *ngFor="let item of request.items" class="item-row">
+                  <div class="item-info">
+                    <span class="item-name">{{item.productName}}</span>
+                    <span class="item-id">ID: {{item.productId}}</span>
+                  </div>
+                  <div class="item-quantity">
+                    <span class="quantity-label">Qty:</span>
+                    <span class="quantity-value">{{item.quantity}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notes Section -->
+            <div *ngIf="request.notes" class="notes-section">
+              <h4>Notes</h4>
+              <p class="notes-text">{{request.notes}}</p>
+            </div>
+
+            <!-- Processing Info -->
+            <div *ngIf="request.processedAt" class="processing-info">
+              <div class="processing-row">
+                <mat-icon>person</mat-icon>
+                <span>Processed by: {{request.processedBy}}</span>
+              </div>
+              <div class="processing-row">
+                <mat-icon>access_time</mat-icon>
+                <span>Processed at: {{request.processedAt | date:'MMM dd, yyyy HH:mm'}}</span>
+              </div>
+              <div *ngIf="request.rejectionReason" class="processing-row rejection">
+                <mat-icon>error</mat-icon>
+                <span>Rejection Reason: {{request.rejectionReason}}</span>
+              </div>
+            </div>
+
+          </mat-card-content>
+
+        </mat-card>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

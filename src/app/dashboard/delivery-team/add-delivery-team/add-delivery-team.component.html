@@ -1,0 +1,220 @@
+<div class="add-delivery-team-page">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item">Delivery Team</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">Add New</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">delivery_dining</mat-icon>
+        Add New Delivery Team Member
+      </h1>
+      <p class="page-subtitle">Create a new delivery team member account</p>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section">
+    <div class="form-container">
+      <form [formGroup]="deliveryTeamForm" (ngSubmit)="onSubmit()" novalidate>
+        
+        <!-- Basic Information Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">person</mat-icon>
+            <div class="card-title">
+              <h3>Basic Information</h3>
+              <p>Enter the team member's basic details</p>
+            </div>
+          </div>
+          
+          <div class="form-grid basic-info">
+            <mat-form-field appearance="outline">
+              <mat-label>Full Name *</mat-label>
+              <input matInput formControlName="name" placeholder="e.g., Rajesh Kumar">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="deliveryTeamForm.get('name')?.invalid && deliveryTeamForm.get('name')?.touched">
+                Full name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="username-field">
+              <mat-label>Username *</mat-label>
+              <input matInput formControlName="userName" placeholder="e.g., delivery_rajesh" (blur)="checkUsername()">
+              <mat-icon matSuffix *ngIf="usernameCheckLoading" class="loading-icon">hourglass_empty</mat-icon>
+              <mat-icon matSuffix *ngIf="usernameValid === true" class="success-icon">check_circle</mat-icon>
+              <mat-icon matSuffix *ngIf="usernameValid === false" class="error-icon">error</mat-icon>
+              <mat-error *ngIf="deliveryTeamForm.get('userName')?.invalid && deliveryTeamForm.get('userName')?.touched">
+                Username is required
+              </mat-error>
+              <mat-hint *ngIf="usernameValid === true" class="success-hint">
+                <mat-icon class="hint-icon">check</mat-icon>
+                Username is available
+              </mat-hint>
+              <mat-hint *ngIf="usernameValid === false" class="error-hint">
+                <mat-icon class="hint-icon">close</mat-icon>
+                {{ usernameError }}
+              </mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Contact Information Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">contact_mail</mat-icon>
+            <div class="card-title">
+              <h3>Contact Information</h3>
+              <p>How to reach the team member</p>
+            </div>
+          </div>
+          
+          <div class="form-grid contact-info">
+            <mat-form-field appearance="outline">
+              <mat-label>Email Address *</mat-label>
+              <input matInput formControlName="email" type="email" placeholder="rajesh.delivery@example.com">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="deliveryTeamForm.get('email')?.invalid && deliveryTeamForm.get('email')?.touched">
+                <span *ngIf="deliveryTeamForm.get('email')?.hasError('required')">Email is required</span>
+                <span *ngIf="deliveryTeamForm.get('email')?.hasError('email')">Please enter a valid email</span>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Phone Number *</mat-label>
+              <input matInput formControlName="phone" placeholder="+919876543210">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="deliveryTeamForm.get('phone')?.invalid && deliveryTeamForm.get('phone')?.touched">
+                Phone number is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Vehicle Information Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">motorcycle</mat-icon>
+            <div class="card-title">
+              <h3>Vehicle Information</h3>
+              <p>Vehicle and license details</p>
+            </div>
+          </div>
+          
+          <div class="form-grid vehicle-info">
+            <mat-form-field appearance="outline">
+              <mat-label>Vehicle Type *</mat-label>
+              <select matNativeControl formControlName="vehicleType">
+                <option value="">Select vehicle type</option>
+                <option value="BIKE">Bike</option>
+                <option value="CAR">Car</option>
+                <option value="LORRY">Lorry</option>
+              </select>
+              <mat-error *ngIf="deliveryTeamForm.get('vehicleType')?.invalid && deliveryTeamForm.get('vehicleType')?.touched">
+                Vehicle type is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>License Number *</mat-label>
+              <input matInput formControlName="licenseNumber" placeholder="DL1234567890">
+              <mat-icon matSuffix>badge</mat-icon>
+              <mat-error *ngIf="deliveryTeamForm.get('licenseNumber')?.invalid && deliveryTeamForm.get('licenseNumber')?.touched">
+                License number is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Vehicle Number *</mat-label>
+              <input matInput formControlName="vehicleNumber" placeholder="MH12AB1234">
+              <mat-icon matSuffix>confirmation_number</mat-icon>
+              <mat-error *ngIf="deliveryTeamForm.get('vehicleNumber')?.invalid && deliveryTeamForm.get('vehicleNumber')?.touched">
+                Vehicle number is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Address Information Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <mat-icon class="card-icon">location_on</mat-icon>
+            <div class="card-title">
+              <h3>Address Information</h3>
+              <p>Physical location details</p>
+            </div>
+          </div>
+          
+          <div class="form-grid address-info">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Street Address *</mat-label>
+              <input matInput formControlName="streetAddress" placeholder="123 Delivery Lane">
+              <mat-icon matSuffix>home</mat-icon>
+              <mat-error *ngIf="deliveryTeamForm.get('streetAddress')?.invalid && deliveryTeamForm.get('streetAddress')?.touched">
+                Street address is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>City *</mat-label>
+              <input matInput formControlName="city" placeholder="Mumbai">
+              <mat-icon matSuffix>location_city</mat-icon>
+              <mat-error *ngIf="deliveryTeamForm.get('city')?.invalid && deliveryTeamForm.get('city')?.touched">
+                City is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>State *</mat-label>
+              <input matInput formControlName="state" placeholder="Maharashtra">
+              <mat-icon matSuffix>map</mat-icon>
+              <mat-error *ngIf="deliveryTeamForm.get('state')?.invalid && deliveryTeamForm.get('state')?.touched">
+                State is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Postal Code *</mat-label>
+              <input matInput formControlName="postalCode" placeholder="400001">
+              <mat-icon matSuffix>markunread_mailbox</mat-icon>
+              <mat-error *ngIf="deliveryTeamForm.get('postalCode')?.invalid && deliveryTeamForm.get('postalCode')?.touched">
+                Postal code is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="country-field">
+              <mat-label>Country</mat-label>
+              <input matInput formControlName="country" readonly>
+              <mat-icon matSuffix>flag</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <div class="action-buttons">
+            <button mat-stroked-button type="button" (click)="onClear()" [disabled]="isLoading" class="clear-btn">
+              <mat-icon>refresh</mat-icon>
+              Clear Form
+            </button>
+            
+            <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="isLoading" class="cancel-btn">
+              <mat-icon>close</mat-icon>
+              Cancel
+            </button>
+            
+            <button mat-raised-button color="primary" type="submit" [disabled]="!canSubmit()" class="create-btn">
+              <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+              <mat-icon *ngIf="!isLoading">add_circle</mat-icon>
+              {{ isLoading ? 'Creating...' : 'Create Team Member' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

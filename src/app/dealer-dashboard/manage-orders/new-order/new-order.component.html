@@ -1,0 +1,131 @@
+<div class="new-order-page">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Dashboard</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item" (click)="goBack()">Manage Orders</span>
+        <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+        <span class="breadcrumb-item active">New Order</span>
+      </div>
+      <h1 class="page-title">
+        <mat-icon class="title-icon">add_shopping_cart</mat-icon>
+        Create New Order
+      </h1>
+    </div>
+  </div>
+
+  <div class="content-container">
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+
+    <!-- Available Products -->
+    <div class="section-card">
+      <h3>Available Products</h3>
+      <div *ngIf="loading" class="loading-message">Loading inventory...</div>
+      
+      <div *ngIf="!loading && inventory.length > 0" class="products-grid">
+        <div *ngFor="let item of inventory" class="product-card">
+          <div class="product-info">
+            <h4>{{ item.productName }}</h4>
+            <div class="product-details">
+              <span class="price">LKR {{ item.unitPrice }}</span>
+              <span class="stock">Available: {{ item.availableQuantity }}</span>
+            </div>
+          </div>
+          <div class="quantity-controls">
+            <input 
+              type="number" 
+              #quantityInput
+              min="1" 
+              [max]="item.availableQuantity"
+              placeholder="Qty"
+              class="quantity-input"
+            >
+            <button 
+              class="add-btn" 
+              (click)="addToOrder(item, quantityInput.value ? +quantityInput.value : 0)"
+              [disabled]="item.availableQuantity === 0"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div *ngIf="orderItems.length > 0" class="section-card">
+      <h3>Order Summary</h3>
+      <div class="order-items">
+        <div *ngFor="let item of orderItems" class="order-item">
+          <div class="item-details">
+            <span class="item-name">{{ item.productName }}</span>
+            <span class="item-quantity">Qty: {{ item.quantity }}</span>
+            <span class="item-price">LKR {{ item.unitPrice }} each</span>
+            <span class="item-total">LKR {{ item.quantity * item.unitPrice }}</span>
+          </div>
+          <button class="remove-btn" (click)="removeFromOrder(item.productName)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="total-amount">
+        <strong>Total: LKR {{ totalAmount }}</strong>
+      </div>
+    </div>
+
+    <!-- Delivery Address -->
+    <div class="section-card">
+      <h3>Delivery Address</h3>
+      <div class="address-form">
+        <div class="form-row">
+          <input 
+            type="text" 
+            [(ngModel)]="deliveryAddress.streetAddress"
+            placeholder="Street Address"
+            class="form-input"
+          >
+        </div>
+        <div class="form-row">
+          <input 
+            type="text" 
+            [(ngModel)]="deliveryAddress.city"
+            placeholder="City"
+            class="form-input"
+          >
+          <input 
+            type="text" 
+            [(ngModel)]="deliveryAddress.state"
+            placeholder="State"
+            class="form-input"
+          >
+        </div>
+        <div class="form-row">
+          <input 
+            type="text" 
+            [(ngModel)]="deliveryAddress.postalCode"
+            placeholder="Postal Code"
+            class="form-input"
+          >
+          <select [(ngModel)]="priority" class="form-input">
+            <option value="NORMAL">Normal Priority</option>
+            <option value="HIGH">High Priority</option>
+            <option value="URGENT">Urgent</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="cancel-btn" (click)="goBack()">Cancel</button>
+      <button 
+        class="create-btn" 
+        (click)="createOrder()"
+        [disabled]="!isCreateOrderEnabled()"
+      >
+        {{ loading ? 'Creating...' : 'Create Order' }}
+      </button>
+    </div>
+  </div>
+</div>
