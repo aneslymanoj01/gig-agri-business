@@ -41,8 +41,11 @@
   opacity: 0.9;
   
   .breadcrumb-item {
+    cursor: pointer;
+    
     &.active {
       font-weight: 500;
+      cursor: default;
     }
   }
   

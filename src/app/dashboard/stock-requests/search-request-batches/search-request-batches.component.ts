@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { StockRequestService } from '../../../shared/services/stock-request.service';
 
 export interface RequestBatchItem {
@@ -45,7 +46,10 @@ export class SearchRequestBatchesComponent implements OnInit {
   isLast = true;
   isLoading = false;
 
-  constructor(private stockRequestService: StockRequestService) {}
+  constructor(
+    private stockRequestService: StockRequestService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadRequestBatches();
@@ -128,5 +132,9 @@ export class SearchRequestBatchesComponent implements OnInit {
 
   closeBatchDetails(): void {
     this.selectedBatch = null;
+  }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard/stock-requests']);
   }
 }

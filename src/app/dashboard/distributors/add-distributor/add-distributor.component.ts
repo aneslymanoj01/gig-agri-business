@@ -137,4 +137,8 @@ export class AddDistributorComponent implements OnInit {
       this.distributorForm.get(key)?.markAsTouched();
     });
   }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard/distributors']);
+  }
 }

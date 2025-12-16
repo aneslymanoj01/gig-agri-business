@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { DistributorService } from '../../../shared/services/distributor.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { Distributor } from '../../../shared/models/distributor.models';
@@ -25,7 +26,8 @@ export class SearchDistributorComponent implements OnInit {
 
   constructor(
     private distributorService: DistributorService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -82,5 +84,9 @@ export class SearchDistributorComponent implements OnInit {
       pages.push(i);
     }
     return pages;
+  }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard/distributors']);
   }
 }

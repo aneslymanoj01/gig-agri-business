@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { DeliveryTeamService } from '../../../shared/services/delivery-team.service';
 
 export interface DeliveryTeamMember {
@@ -41,7 +42,10 @@ export class SearchDeliveryTeamComponent implements OnInit {
   isLast = true;
   isLoading = false;
 
-  constructor(private deliveryTeamService: DeliveryTeamService) {}
+  constructor(
+    private deliveryTeamService: DeliveryTeamService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadDeliveryTeam();
@@ -116,5 +120,9 @@ export class SearchDeliveryTeamComponent implements OnInit {
     }
     
     return pages;
+  }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard/delivery-team']);
   }
 }

@@ -125,4 +125,8 @@ export class AddDealerComponent implements OnInit {
       this.dealerForm.get(key)?.markAsTouched();
     });
   }
+
+  goBack(): void {
+    this.router.navigate(['/distributor-dashboard/dealers']);
+  }
 }

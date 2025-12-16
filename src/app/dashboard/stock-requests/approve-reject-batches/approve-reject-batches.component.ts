@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { StockRequestService } from '../../../shared/services/stock-request.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 
@@ -37,7 +38,8 @@ export class ApproveRejectBatchesComponent {
 
   constructor(
     private stockRequestService: StockRequestService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) {}
 
   onSearchBatch(): void {
@@ -120,5 +122,9 @@ export class ApproveRejectBatchesComponent {
         this.isProcessing = false;
       }
     });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard/stock-requests']);
   }
 }

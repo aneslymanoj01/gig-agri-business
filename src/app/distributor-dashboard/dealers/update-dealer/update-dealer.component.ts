@@ -123,4 +123,8 @@ export class UpdateDealerComponent implements OnInit {
   onCancel(): void {
     this.router.navigate(['/distributor-dashboard/dealers']);
   }
+
+  goBack(): void {
+    this.router.navigate(['/distributor-dashboard/dealers']);
+  }
 }

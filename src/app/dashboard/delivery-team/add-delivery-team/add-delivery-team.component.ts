@@ -111,4 +111,8 @@ export class AddDeliveryTeamComponent implements OnInit {
   onCancel(): void {
     this.router.navigate(['/dashboard/delivery-team']);
   }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard/delivery-team']);
+  }
 }

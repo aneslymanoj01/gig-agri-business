@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { DealerService } from '../../../shared/services/dealer.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 
@@ -45,7 +46,8 @@ export class SearchDealerComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dealerService: DealerService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -136,5 +138,9 @@ export class SearchDealerComponent implements OnInit {
     }
     
     return pages;
+  }
+
+  goBack(): void {
+    this.router.navigate(['/distributor-dashboard/dealers']);
   }
 }

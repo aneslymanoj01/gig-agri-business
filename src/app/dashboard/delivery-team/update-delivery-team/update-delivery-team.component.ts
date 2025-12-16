@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { DeliveryTeamService } from '../../../shared/services/delivery-team.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 
@@ -34,7 +35,8 @@ export class UpdateDeliveryTeamComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private deliveryTeamService: DeliveryTeamService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -132,5 +134,9 @@ export class UpdateDeliveryTeamComponent implements OnInit {
     this.selectedTeamMember = null;
     this.teamMemberId = null;
     this.updateForm.reset();
+  }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard/delivery-team']);
   }
 }

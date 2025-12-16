@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ProductService } from '../../../shared/services/product.service';
 
 export interface Product {
@@ -35,7 +36,10 @@ export class SearchProductComponent implements OnInit {
   isLast = true;
   isLoading = false;
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -110,5 +114,9 @@ export class SearchProductComponent implements OnInit {
     }
     
     return pages;
+  }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard/products']);
   }
 }

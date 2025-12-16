@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ProductService } from '../../../shared/services/product.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 
@@ -28,7 +29,8 @@ export class UpdateProductComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -111,5 +113,9 @@ export class UpdateProductComponent implements OnInit {
     this.selectedProduct = null;
     this.productId = null;
     this.updateForm.reset();
+  }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard/products']);
   }
 }

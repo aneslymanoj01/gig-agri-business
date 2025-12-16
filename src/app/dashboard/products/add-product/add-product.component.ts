@@ -71,4 +71,8 @@ export class AddProductComponent implements OnInit {
   onCancel(): void {
     this.router.navigate(['/dashboard/products']);
   }
+
+  goBack(): void {
+    this.router.navigate(['/dashboard/products']);
+  }
 }
